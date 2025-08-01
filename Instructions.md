@@ -145,26 +145,64 @@ Here's a detailed **project plan** that combines and aligns the three original i
 ## 📁 **GitHub Repo Structure Example**
 
 ```
-.
+secure-devsecops-pipeline/
+├── app/
+│   ├── app.py
+│   ├── requirements.txt
+│   └── Dockerfile
+│
 ├── Jenkinsfile
+│
+├── helm/
+│   └── flask-app/
+│       ├── Chart.yaml
+│       ├── values.yaml
+│       ├── templates/
+│       │   ├── deployment.yaml
+│       │   ├── service.yaml
+│       │   ├── ingress.yaml         # optional
+│       │   └── _helpers.tpl
+│
 ├── ansible/
+│   ├── inventory.ini
 │   ├── jenkins-setup.yml
 │   ├── deploy-app.yml
 │   └── roles/
-├── helm/
-│   └── myapp/
-│       ├── Chart.yaml
-│       └── values.yaml
+│       ├── jenkins/
+│       │   ├── tasks/
+│       │   │   └── main.yml
+│       │   └── templates/
+│       │       └── jenkins-config.groovy.j2
+│       └── deploy/
+│           ├── tasks/
+│           │   └── main.yml
+│           └── templates/
+│               └── values.yaml.j2
+│
 ├── terraform/
-│   └── main.tf
-├── docker/
-│   └── Dockerfile
+│   ├── main.tf
+│   ├── variables.tf
+│   ├── outputs.tf
+│   ├── providers.tf
+│   └── backend.tf
+│
 ├── k8s-security/
 │   ├── rbac.yaml
-│   └── network-policies.yaml
+│   ├── network-policy.yaml
+│   └── pod-security-standards.yaml
+│
 ├── scripts/
-│   └── scan.sh
-└── README.md
+│   ├── trivy-scan.sh
+│   ├── kube-bench-scan.sh
+│   └── health-check.sh
+│
+├── .github/
+│   └── workflows/
+│       └── notify-on-push.yml       # optional: GitHub Actions for notifications
+│
+├── .gitignore
+├── README.md
+└── architecture-diagram.png         # Optional visual overview
 ```
 
 ---
