@@ -1,0 +1,37 @@
+name: CI/CD Pipeline to Azure
+
+on:
+  push:
+    branches:
+      -main
+
+env:
+  AZURE_WEBAPP_NAME: SecureCICDPipeline
+  AZURE_CONTAINER_REGISTRY: blank
+  IMAGE_NAME: $(( github.repository ))
+
+jobs: 
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.Azure_CREDENTIALS }}
+        
+
+      - name: Build Docker image 
+        run: |
+          docker build -t $AZURE_CONTAINER_REGISTRY/$IMAGE_NAME:latest .
+          echo ${{ secrets.REGISTRY_PASSWORD }} | docker login $AZURE_CONTAINER_REGISTRY -u ${{ secrets.REGISTRY_USERNAME }} --password-stdin
+          docker push $AZURE_CONTAINER_REGISTRY/$IMAGE_NAME:latest
+      
+      - name: Deploy to Azure Web App 
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          images: $AZURE_CONTAINER_REGISTRY/$IMAGE_NAME:latest
